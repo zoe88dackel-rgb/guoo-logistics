@@ -7,7 +7,7 @@
   <meta name="description" content="填写受邀人或公司名称，预览并保存专属邀请函。">
   <title>邀请函生成器 · 国欧物流 / 国贸集团</title>
   <link rel="icon" type="image/svg+xml" href="./assets/icon.svg">
-  <link rel="stylesheet" href="./style-v3.css">
+  <link rel="stylesheet" href="./style-v3.css?v=4">
 </head>
 <body>
   <div class="page">
@@ -23,7 +23,7 @@
       <section class="editor" aria-labelledby="page-title">
         <div class="eyebrow"><span></span>2026 · 满洲里</div>
         <h1 id="page-title">制作专属<span>邀请函</span></h1>
-        <p class="intro">填写受邀人或公司名称，<br>把这份邀请送给重要的伙伴。</p>
+        <p class="intro">选择邀约方，填写受邀人名称。<br>实时预览，保存专属邀请函。</p>
 
         <form id="invitation-form" novalidate>
           <fieldset id="issuer-options" class="issuer-options">
@@ -34,13 +34,23 @@
             </div>
           </fieldset>
           <div class="field-heading"><label for="guest-name">受邀人 / 公司名称</label><span id="count">0 / 24</span></div>
-          <input id="guest-name" name="guest" type="text" placeholder="例如：张先生、南果跨境" maxlength="48" autocomplete="off" spellcheck="false" aria-describedby="field-hint" autofocus>
+          <input id="guest-name" name="guest" type="text" placeholder="例如：张先生、南果跨境" maxlength="48" autocomplete="off" spellcheck="false" aria-describedby="field-hint">
           <p id="field-hint" class="field-hint">名称会自动显示在右侧邀请函中</p>
+          <div class="logo-field">
+            <div class="field-heading"><label for="logo-upload">替换右上角 Logo <span class="optional">选填</span></label></div>
+            <div class="upload-row">
+              <label for="logo-upload" class="upload-trigger">＋ 上传 Logo</label>
+              <span class="file-name" id="logo-file-name">默认保留原版 Logo</span>
+              <button type="button" id="clear-logo" class="clear-logo" hidden>恢复默认</button>
+            </div>
+            <input type="file" id="logo-upload" class="file-input" accept="image/png,image/jpeg,image/webp" aria-describedby="logo-hint">
+            <p id="logo-hint" class="logo-hint">建议使用透明 PNG，文件不超过 6 MB。图片仅在浏览器本地处理。</p>
+          </div>
           <button id="save-button" type="submit" disabled>
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 15v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span>保存邀请函</span>
           </button>
-          <p class="save-note">高清 PNG 图片 · 可保存后直接发送</p>
+          <p class="save-note">PNG 图片 · 手机长按保存 / 电脑直接下载</p>
           <p id="status" class="status" role="status" aria-live="polite"></p>
         </form>
 
@@ -50,7 +60,7 @@
       <section class="preview" aria-labelledby="preview-title">
         <div class="preview-heading"><h2 id="preview-title">邀请函预览</h2><span><i></i>实时更新</span></div>
         <div class="paper"><canvas id="invitation" width="841" height="1870" role="img" aria-label="邀请函预览，填写名称后将实时更新"></canvas><div id="loading" class="loading">正在载入邀请函…</div></div>
-        <p id="template-note" class="preview-note">国欧物流 · 预览即保存效果</p>
+        <p id="template-note" class="preview-note">国欧物流 · 预览采用轻量图片</p>
       </section>
     </main>
     <footer><span id="issuer-footer">国欧物流</span><span>诚邀莅临 · 共启新程</span></footer>
@@ -60,7 +70,8 @@
     <div class="dialog-header"><div><h2 id="save-title">邀请函已生成</h2><p>长按下方图片，选择「保存图片」</p></div><button id="close-dialog" type="button" aria-label="关闭">×</button></div>
     <img id="save-image" alt="已生成的专属邀请函，可长按保存">
   </dialog>
-  <script src="./templates-v3.js" defer></script>
-  <script src="./app-v3.js" defer></script>
+  <script src="./templates-v3.js?v=4" defer></script>
+  <script src="./app-v3.js?v=4" defer></script>
+  <script src="./enhancements.js?v=4" defer></script>
 </body>
 </html>

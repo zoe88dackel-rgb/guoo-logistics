@@ -1,14 +1,32 @@
-# 满洲里试运营仪式 · 邀请函生成器
+# 邀请函在线生成器
 
-来自公开仓库 [Lilrain-hub/Rain-web-publish](https://github.com/Lilrain-hub/Rain-web-publish) 的现有邀请函工具。保留原版页面设计、国欧物流/国贸集团切换、收件人姓名填写、实时预览和 PNG 导出。
+本目录基于公开仓库 [Lilrain-hub/Rain-web-publish](https://github.com/Lilrain-hub/Rain-web-publish) 的 `docs/` 邀请函页面进行修改。移植后的项目独立放在 `invitation/`，不覆盖仓库已有网站。
 
-**本目录只做 Bug 修复，不新增编辑功能。**
+## 功能
+- 国欧物流 / 国贸集团邀请函切换
+- 输入受邀人或公司名称，实时预览
+- 自定义右上角 GUOO Logo（PNG、JPG、WebP，最多 6 MB），一键恢复原版
+- 电脑浏览器直接下载 PNG；iPhone / 微信内置浏览器可长按保存
+- 高清导出失败时，自动改用本地轻量图片生成，避免导出彻底失败
+- 所有输入和上传 Logo 在浏览器本地处理
 
-修复内容：
-- 修复跨域读取原图时可能导致 Canvas 污染、生成 PNG 失败的问题。
-- 高清底图无法加载或浏览器内存不足时，自动退回到本地轻量预览图导出，避免完全无法保存。
-- 回退导出时明确显示「标准清晰度」，避免误标为高清。
+## 重要：原图依赖
+原仓库的两张 3505×7792 高清邀请函底图各约 3.3 MB。受连接器对大体积二进制文件的读取限制，它们暂时无法被完整复制到此仓库。因此该版本的高清导出通过 GitHub Raw URL 读取原仓库**固定提交**中的高清图片；轻量预览图片已完整复制到 `assets/`。
 
-**资源说明：** 高清底图每张约 3.3 MB，目前通过固定到原仓库提交的公开 RAW URL 引用；较小的预览图已复制在本目录 assets 内。如果原仓库删除高清原图、网络受限或禁用跨域访问，将使用标准清晰度回退方案。若需完全独立高清运行，可把源仓库 docs/assets/ 内的 guoo-blank-v3.png 和 guomao-blank-v3.png 下载到本目录 assets，再修改 templates-v3.js 对应两条 src 为本地路径。
+如果原仓库图片无法访问，仍可用本地 WebP 底图保存兼容画质 PNG。此版本不是完全离线高清版。
 
-静态网页直接托管 invitation/ 目录即可。
+为了让本项目完全独立，可手动从原项目 `docs/assets/` 下载：
+- `guoo-blank-v3.png`
+- `guomao-blank-v3.png`
+
+将两张图片存入这里的 `assets/`，并将 `templates-v3.js` 中两个 `src` 路径替换成相对路径，即可彻底移除对原仓库的依赖。
+
+## 部署
+项目无需构建，入口 `invitation/index.html`。仓库如通过 GitHub Pages 发布 `main` 根目录，站点位于：
+
+https://zoe88dackel-rgb.github.io/guoo-logistics/invitation/
+
+若未启用 Pages，需要在仓库 Settings → Pages 中启用。若启用了 Cloudflare Pages，也可把构建输出目录指向 `invitation`，不需要构建命令。
+
+## 版权说明
+本项目保留原版活动邀请函素材和视觉设计，设计素材及商标权利归各自权利人。原项目来源如上。

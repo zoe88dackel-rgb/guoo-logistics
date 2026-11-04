@@ -17,7 +17,6 @@ let cleanTemplate;
 let saving = false;
 let resultURL;
 let loadRevision = 0;
-let usedPreviewForExport = false;
 const templateCache = new Map();
 const issuerOptions = document.getElementById('issuer-options');
 const PREVIEW_MAX_WIDTH = 1052;
@@ -42,9 +41,6 @@ function exportDimensions(config) {
 }
 async function loadTemplateImage(config, forPreview = false) {
   const image = new Image();
-  // External master art must be loaded in CORS mode before drawing to Canvas.
-  // Otherwise getImageData() and toBlob() fail with SecurityError.
-  image.crossOrigin = 'anonymous';
   image.src = forPreview && config.previewSrc ? config.previewSrc : config.src;
   await image.decode();
   return image;
@@ -137,32 +133,17 @@ function makeBlob(target) {
 }
 
 async function exportInvitation(name, config) {
-  // Keep the original high-resolution rendering path. Fall back to the
-  // bundled lightweight artwork when mobile memory or network fails.
-  const candidates = [{ src: config.src, preview: false }];
-  if (config.previewSrc) candidates.push({ src: config.previewSrc, preview: true });
-  let lastError;
-  usedPreviewForExport = false;
-  for (const candidate of candidates) {
-    let image;
-    let output;
-    try {
-      image = await loadTemplateImage({ ...config, src: candidate.src, previewSrc: null });
-      output = prepareTemplate(image, config,
-        candidate.preview ? previewDimensions(config) : exportDimensions(config));
-      drawName(output.getContext('2d'), name, config, output.width / config.width);
-      const blob = await makeBlob(output);
-      usedPreviewForExport = candidate.preview;
-      return blob;
-    } catch (error) {
-      lastError = error;
-      console.warn('Image export source failed; trying fallback', error);
-    } finally {
-      if (image) image.src = '';
-      if (output) { output.width = 1; output.height = 1; }
-    }
+  const image = await loadTemplateImage(config);
+  let output;
+  try {
+    output = prepareTemplate(image, config, exportDimensions(config));
+    image.src = '';
+    drawName(output.getContext('2d'), name, config, output.width / config.width);
+    return await makeBlob(output);
+  } finally {
+    image.src = '';
+    if (output) { output.width = 1; output.height = 1; }
   }
-  throw lastError || new Error('无法生成邀请函');
 }
 
 form.addEventListener('submit', async event => {
@@ -183,9 +164,7 @@ form.addEventListener('submit', async event => {
     if (isMobileSave()) {
       document.getElementById('save-image').src = resultURL;
       dialog.showModal();
-      status.textContent = usedPreviewForExport
-        ? '图片已生成（标准清晰度），可长按保存。'
-        : '高清图片已生成，可在弹窗中长按保存。';
+      status.textContent = '图片已生成，可在弹窗中长按保存。';
     } else {
       const link = document.createElement('a');
       link.href = resultURL;
@@ -193,9 +172,7 @@ form.addEventListener('submit', async event => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      status.textContent = usedPreviewForExport
-        ? '已下载标准清晰度图片；高清图片暂时不可用。'
-        : '高清图片已生成，请查看浏览器的下载文件。';
+      status.textContent = '图片已生成，请查看浏览器的下载文件。';
     }
   } catch (error) {
     status.textContent = '图片暂时未能保存，请重试。';
